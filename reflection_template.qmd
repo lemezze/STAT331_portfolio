@@ -4,6 +4,9 @@ author: "Leticia Mezzetti"
 format: 
   html: 
     self-contained: true
+    theme: 
+      light: minty
+      dark: minty
 layout: margin-left
 editor: visual
 execute: 
@@ -22,7 +25,8 @@ execute:
 -   `csv`
 
 ```{r wd-1-csv}
-
+#Taken from Lab 2, Question 1
+surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 ```
 
 -   `xlsx`
