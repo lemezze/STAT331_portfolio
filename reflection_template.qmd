@@ -25,7 +25,7 @@ execute:
 -   `csv`
 
 ```{r wd-1-csv}
-#Taken from Lab 2, Question 1
+# Taken from Lab 2, Question 1
 surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 ```
 
@@ -234,13 +234,53 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-3-1}
+# Taken from Lab 2, Question 14
+ggplot(data = surveys,
+        mapping = aes(x = species,
+                      y = weight)) +
+          geom_jitter(alpha = 0.5,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Species of Rodents",
+       y = "Weight (g)",
+       title = "Relationship between Species of Rodents and Weight (g)") +
+  guides(x = guide_axis(angle = 90))
 
+# Axis Label Orientation: https://ggplot2.tidyverse.org/reference/guide_axis.html
 ```
 
 -   Example 2
 
 ```{r dvs-3-2}
+# Taken from Challenge 2, Question 2
+cdPalette_grey <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
+                    "#0072B2", "#D55E00", "#CC79A7")
 
+
+ggplot(data = surveys,
+        aes(x = weight, y = species, color = genus)) +
+            geom_boxplot() +
+  scale_color_manual(values = cdPalette_grey) +
+  labs(x = "Weight (g)",
+       y = "Species",
+       color = "Genus of Organism") +
+  annotate("text", y = 1, x = 400, label = "Neotoma") +
+  annotate("text", y = 2, x = 200, label = "Chaetodipus") +
+  annotate("text", y = 3, x = 300, label = "Peromyscus") +
+  annotate("text", y = 4, x = 200, label = "Perognathus") +
+  annotate("text", y = 5, x = 350, label = "Reithrodontomys") + 
+  annotate("text", y = 6, x = 300, label = "Sigmodon") +
+  annotate("text", y = 7, x = 300, label = "Onychomys") +
+  annotate("text", y = 8, x = 300, label = "Peromyscus") +
+  annotate("text", y = 9, x = 350, label = "Reithrodontomys") +
+  annotate("text", y = 10, x = 350, label = "Dipodomys") +
+  annotate("text", y = 11, x = 350, label = "Dipodomys") +
+  annotate("text", y = 12, x = 350, label = "Chaetodipus") +
+  annotate("text", y = 13, x = 350, label = "Dipodomys") +
+  annotate("text", y = 14, x = 300, label = "Onychomys") +
+  xlim(0, 600) + 
+  theme_dark() +
+  theme(legend.position = "none")
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
