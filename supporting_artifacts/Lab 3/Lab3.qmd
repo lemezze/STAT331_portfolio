@@ -1,0 +1,171 @@
+---
+title: "Lab 3: Hip-Hop Lyrics"
+author: "Leticia Mezzetti"
+format: 
+  html:
+    self-contained: true
+    code-tools: true
+    code-fold: true
+    theme: 
+      light: lux
+      dark: lux
+execute: 
+  echo: true
+  messages: false
+  warning: false
+---
+
+## 1) Setup
+
+```{r packages}
+library(tidyverse)
+library(here)
+```
+
+## 2) Data Set
+
+```{r data}
+hiphop <- read_csv(here("Labs", "Lab 3", "hiphop.csv"))
+```
+
+## 2.1) Summary
+
+#### **2. Brief Overview of this Data Set**
+
+A linguistic researcher from the University of Minnesota created a study that attempted to predict musical taste based on familiarity with African American English (AAE). This study had 168 participants and were asked to define 64 different AAE terms. Each of their definitions were given a "familiarity" score on a scale of 1 to 5 (1 = not at all, 5 = very well). Participants were also asked to provide their demographic information, music tastes, and social ties to African Americans (represented as columns).
+
+#### **3.** **What are the rows of this data set?**
+
+There are 10,752 rows in this data set. Each row contains one of the 64 AAE terms that each of the 168 participants had to define.
+
+## 2.2) Cleaning the Data Set
+
+#### **4. Missing values for some of the variables were replaced with other values. How were missing values replaced? What do you believe are some benefits and drawbacks of doing this?**
+
+Some of the missing values were either marked as "NA," or were given mean values. Some other information, such as the city or county populations of participants' hometowns, have zeroes to fill in the missing information. Some benefits to filling the data with mean values are that they are an attempt to minimizing a skewed data set. However, this could also lead to a bias in the data and invalid assumptions of the data.
+
+#### **5. Clean the data set in whichever ways you see fit. This might mean adjusting *variable type*, for example from `character` to `factor`, or dealing with missing data. Assign your cleaned data set to a new data set named `hiphop_clean` -- use this data set going forward.**
+
+```{r}
+# Factor familiarity score
+hiphop_clean <- hiphop |> 
+    mutate(familiarity <- as.factor(familiarity))
+
+# Replace NA values in numPreferredArtists to mean values. Creates consistency with study
+
+cleanNumArtists <- hiphop_clean$numPreferredArtists
+
+cleanNumArtists[is.na(cleanNumArtists)] <- mean(cleanNumArtists, na.rm = TRUE)
+
+# Replace NA values in numOverallArtists to mean values. Creates consistency with study
+
+cleanNumOverall <- hiphop_clean$numOverallArtists
+
+cleanNumOverall[is.na(cleanNumOverall)] <- mean(cleanNumOverall, na.rm = TRUE)
+
+# Figured out how to do this using the following resource, https://www.digitalocean.com/community/tutorials/replace-in-r
+```
+
+## 3) Data Summaries
+
+#### **6. How many unique AAE words were studied in this data set?**
+
+There are 64 unique AAE words that were studied in this data set. They can be verified with the code below.
+
+```{r}
+nrow(distinct(hiphop, word))
+ # Gives the number of unique words in the col word. Example found in the R Documentation for distinct()
+```
+
+#### 
+
+#### **7. Make a new variable that re-categorizes `ethnic` into only two groups, "white" and "non-white", to simplify your data.**
+
+```{r}
+hiphop_clean <- mutate(hiphop_clean, 
+                       binEthnic <- case_when(ethnic == "white" ~ "white",
+                                              TRUE ~ "non-white"))
+# Utilized case_when and followed the example found here, https://bookdown.org/ansellbr/WEHI_tidyR_course_book/manipulating-data-with-dplyr.html, to model my code
+```
+
+#### 
+
+#### **8. It is fairly common for researchers to collapse ethnic or racial categories similar to what you just did. What are some issues with representing the data in this way?**
+
+Some issues about collapsing ethnic or racial categories are that it would lead to an inaccurate representation because "non-white" is an oversimplification. This would lead to an inaccurate analysis and assumptions when dealing with race or ethnicity because those in the "non-white" category have vastly different experiences to just be lumped together.
+
+#### **9. What are the demographics of the people in this study? Investigate the variables `sex`, `age`, and `ethnic` and summarize your findings in 1-3 complete sentences.**
+
+```{r}
+subjects <- hiphop_clean |>
+  select(subj, age, sex, ethnic) |>
+distinct(subj, age, sex, ethnic) |>
+  count(sex, ethnic, sort = TRUE)
+
+subjects |>
+  summary()
+```
+
+-   There were 117 participants that identified as women and 51 participants that identified as men in this study.
+
+-   135 of these participants identified as White, 33 identified identified as non-White, and 1 was unknown.
+
+-   The ages of participants ranged from 16 to 48 and the median age of participants was 19.
+
+#### 
+
+#### **10. Make at least two plots to display the demographic information of the subjects in this study.**
+
+```{r}
+hiphop |>
+  select(subj, age, sex, ethnic) |>
+  distinct(subj, age, sex, ethnic) |>
+  ggplot(mapping <- aes(x = age)) +
+  geom_bar( fill="lightseagreen") + 
+  labs(title = "Participant Ages", 
+       x = "Age (in years)", 
+       y = "Count") +
+  ylim(0, 70)
+
+hiphop |>
+  select(subj, age, sex, ethnic) |>
+  distinct(subj, age, sex, ethnic) |>
+  ggplot(aes(x = ethnic, fill = sex)) +
+  geom_bar() +
+  labs(title = "Gender and Ethnic Identity of Participants",
+       x = "Ethnic/Racial Identity", 
+       y = "Count")
+```
+
+## 3.1) Familiar Words
+
+For each demographic group listed below, determine which word(s) in this study was(were) the most **and** least familiar on average.
+
+#### **11. People below the age of 20.**
+
+```{r}
+belowTwenty <- hiphop |>
+  filter(age < 20) |> 
+  group_by(word)
+
+```
+
+#### **12. Non-white women.**
+
+#### **13. White men above the age of 30.**
+
+## 3.2) Study Subjects
+
+A joke among the [Tidy Tuesday](https://www.tidytuesday.com/) community is that Justin Bieber was one of the subjects in this study. Bieber, a white male, from a relatively small town (10,000-60,000 people) in Ontario would have been 17-23 at the time of the study.
+
+#### **14. Determine which subject you believe is secretly Bieber, justify your answer.**
+
+```{r}
+
+hiphop |>
+  filter(ethnic == "white", sex == "Male", city > 10000, city < 60000, age >= 17, age <= 23, bieber == 5.0) |>
+    distinct(subj)
+
+```
+
+Based off of the given demographic information about Justin Bieber and the assumption that he named 5 of his songs, I was able to narrow down the potential subjects that could secretly be Bieber. I believe "p17" was Justin Bieber.

@@ -1,0 +1,120 @@
+---
+title: "Challenge 2"
+author: "Leticia Mezzetti"
+format: 
+  html:
+    self-contained: true
+    code-tools: true
+    code-fold: true
+    theme: 
+      light: lux
+      dark: lux
+execute: 
+  echo: true
+  error: true
+---
+
+# Set-up
+
+In the code chunk below load in the packages necessary for your analysis. You should only need the tidyverse and here packages for this analysis, unless you decide to use additional resources.
+
+```{r setup}
+library(tidyverse)
+library(here)
+library(ggridges)
+```
+
+### **Question 1**
+
+Using the `read_csv()` function and the **here** package, write the code to load in the `surveys.csv` dataset. For simplicity, store the dataset in an object named `surveys`.
+
+```{r data}
+# Code for question 1! 
+surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
+```
+
+# Data Context
+
+The Portal Project is a long-term ecological study being conducted near Portal, AZ. Since 1977, the site has been used to study the interactions among rodents, ants and plants and their respective responses to climate. To study the interactions among organisms, we experimentally manipulate access to 24 study plots. This study has produced over 100 scientific papers and is one of the longest running ecological studies in the U.S.
+
+We will be investigating the animal species diversity and weights found within plots at the Portal study site. The dataset is stored as a comma separated value (CSV) file. Each row holds information for a single animal, and the columns represent:
+
+| Column          | Description                        |
+|-----------------|------------------------------------|
+| record_id       | Unique id for the observation      |
+| month           | month of observation               |
+| day             | day of observation                 |
+| year            | year of observation                |
+| plot_id         | ID of a particular plot            |
+| species_id      | 2-letter code                      |
+| sex             | sex of animal ("M", "F")           |
+| hindfoot_length | length of the hindfoot in mm       |
+| weight          | weight of the animal in grams      |
+| genus           | genus of animal                    |
+| species         | species of animal                  |
+| taxon           | e.g. Rodent, Reptile, Bird, Rabbit |
+| plot_type       | type of plot                       |
+
+# Ridge Plot
+
+In questions 8-14, you used side-by-side boxplots to visualize the distribution of weight within each species. Boxplots have [substantial flaws](https://www.data-to-viz.com/caveat/boxplot.html), namely that they disguise distributions with multiple modes.
+
+A "superior" alternative is the density plot. However, **ggplot2** does not allow for side-by-side density plots using `geom_density()`. Instead, we will need to make use of the **ggridges** package to create side-by-side density (ridge) plots.
+
+```{r}
+# Code from question 13
+ggplot(data = surveys,
+        mapping = aes(x = weight, y = species)) +
+          geom_jitter(alpha = 0.5, color = "cadetblue") +
+            geom_density_ridges() +
+  labs(x = "Weight (g)",
+       y = "Species")
+```
+
+# 
+
+**Exploring Color Themes/ggplot2 Annotation**
+
+The built in `ggplot()` color scheme may not be what you were looking for, but don't worry! There are many other color palettes available to use!
+
+You can change the colors used by `ggplot()` a few different ways (manually or through a package specification).
+
+## **2.1 Manual Specification**
+
+```{r}
+# Code from question 13
+
+# A color deficient friendly palette with gray:
+cdPalette_grey <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
+                    "#0072B2", "#D55E00", "#CC79A7")
+
+
+ggplot(data = surveys,
+        aes(x = weight, y = species, color = genus)) +
+            geom_boxplot() +
+  scale_color_manual(values = cdPalette_grey) +
+  labs(x = "Weight (g)",
+       y = "Species",
+       color = "Genus of Organism") +
+  annotate("text", y = 1, x = 400, label = "Neotoma") +
+  annotate("text", y = 2, x = 200, label = "Chaetodipus") +
+  annotate("text", y = 3, x = 300, label = "Peromyscus") +
+  annotate("text", y = 4, x = 200, label = "Perognathus") +
+  annotate("text", y = 5, x = 350, label = "Reithrodontomys") + 
+  annotate("text", y = 6, x = 300, label = "Sigmodon") +
+  annotate("text", y = 7, x = 300, label = "Onychomys") +
+  annotate("text", y = 8, x = 300, label = "Peromyscus") +
+  annotate("text", y = 9, x = 350, label = "Reithrodontomys") +
+  annotate("text", y = 10, x = 350, label = "Dipodomys") +
+  annotate("text", y = 11, x = 350, label = "Dipodomys") +
+  annotate("text", y = 12, x = 350, label = "Chaetodipus") +
+  annotate("text", y = 13, x = 350, label = "Dipodomys") +
+  annotate("text", y = 14, x = 300, label = "Onychomys") +
+  xlim(0, 600) + 
+  theme_dark() +
+  theme(legend.position="none")
+
+# Found how to get rid of legend using https://stackoverflow.com/questions/35618260/remove-legend-ggplot-2-2 and "theme" R documentation
+```
+
+# 

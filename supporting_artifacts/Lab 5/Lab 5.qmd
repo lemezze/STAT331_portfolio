@@ -1,0 +1,224 @@
+---
+title: "Lab 5: Factors in Visualizations"
+author: "Leticia Mezzetti"
+format: 
+  html:
+    self-contained: true
+    code-tools: true
+    code-fold: true
+    theme: 
+      light: minty
+      dark: minty
+execute: 
+  echo: true
+  messages: false
+  warning: false
+---
+
+# **Lab 5: Factors in Visualizations**
+
+#### Set Up
+
+```{r}
+library(tidyverse)
+library(here)
+library(forcats)
+library(dplyr)
+```
+
+```{r}
+surveys <- read_csv(here("Labs", "surveys.csv"))
+```
+
+## **1. Revisiting Lab 2**
+
+#### Boxplot for Relationship between Weight and Rodent Species
+
+```{r}
+ggplot(data = surveys,
+        mapping = aes(x = weight,
+                      y = species)) +
+          geom_jitter(alpha = 0.1,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Weight (g)",
+       y = "Species of Rodents",
+       title = "Relationship between Weight (g) and Species of Rodents")
+
+```
+
+#### 
+
+**1. Reorder the species so the boxplots for weights go in descending order (largest to smallest).**
+
+```{r}
+  ggplot(data = surveys,
+        mapping = aes(x = weight,
+                      y = fct_reorder(species, weight))) +
+          geom_jitter(alpha = 0.1,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Weight (g)",
+       y = "Species of Rodents",
+       title = "Relationship between Weight (g) and Species of Rodents")
+```
+
+#### 
+
+**2. Now that you've reordered, look at your y-axis label. That's long! Let's take Will Chase's advice and move the y-axis label to the top of the plot.**
+
+```{r}
+  ggplot(data = surveys,
+        mapping = aes(x = weight,
+                      y = fct_reorder(species, weight))) +
+          geom_jitter(alpha = 0.1,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Weight (g)",
+       y = "",
+       title = "Relationship between Weight (g) and Species of Rodents")
+```
+
+## 
+
+2.  **Time-Series Plot**
+
+#### 
+
+**1. Create a visualization how weights vary for each genus over the duration of the study.**
+
+```{r}
+year_summary <- surveys |>
+  summarize(year, weight, genus)
+
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = weight)) +
+  geom_line() +
+  facet_wrap(~ genus) +
+  labs(title = "Weight Variation in Rodent Genus per Year")
+
+```
+
+#### 
+
+**2. Calculate and plot the [mean]{.underline} weight for each genus for each year.**
+
+```{r}
+year_summary <- surveys |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight, na.rm = TRUE))
+
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = mean_weight,
+                      color = genus)) +
+  geom_line() +
+  labs(title = "Weight Variation in Rodent Genus per Year")
+
+# Learned more about summarize using https://www.neonscience.org/resources/learning-hub/tutorials/dc-time-series-subset-dplyr-r
+```
+
+#### 
+
+**3. Reorder the lines so the mean weights go in descending order (largest to smallest).**
+
+```{r}
+year_summary <- surveys |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
+
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = mean_weight,
+                      color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
+  geom_line() +
+  labs(title = "Weight Variation in Rodent Genus per Year")
+
+```
+
+#### 
+
+**4. Now that you've reordered the lines, look at your legend's label. That's terrible! Let's give the legend a new title *and* move the information from the y-axis to the plot title.**
+
+```{r}
+year_summary <- surveys |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
+
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = mean_weight,
+                      color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
+  geom_line() +
+  labs(title = "Weight Variation in Rodent Genus per Year",
+       color = "Genus Type",
+       x = "Year",
+       y = "")
+
+# Resource used to changing legend title: https://stackoverflow.com/questions/52985946/change-legend-title-ggplot2
+
+```
+
+#### 
+
+## **3. Caputures over the Week**
+
+#### 
+
+**1. Create a visualization of the number of rodents captured each day of the week.**
+
+```{r}
+surveys |>
+  group_by(day_of_week) |>
+  drop_na() |>
+  ggplot(mapping <- aes(x = day_of_week)) +
+  geom_bar(fill = "lightseagreen") +
+  labs(title = "Number of Rodents Captured Each Day of the Week",
+       x = "Day of Week",
+       y = "Count")
+```
+
+#### 
+
+**2. Change the order of the day of the week to go Monday through Sunday.**
+
+```{r}
+
+day_order <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+surveys |>
+  group_by(day_of_week) |>
+  drop_na() |>
+  ggplot(mapping <- aes(x = factor(day_of_week,
+                                     day_order))) +
+  geom_bar(fill = "lightseagreen") +
+  labs(title = "Number of Rodents Captured Each Day of the Week",
+       x = "Day of Week",
+       y = "Count")
+
+```
+
+#### 
+
+**3. Collapse Monday through Friday into a `"Weekday"` level, and collapse Saturday and Sunday into a `"Weekend"` level. Plot the number of rodents captured between the two groups.**
+
+```{r}
+weekday <- c("Mon", "Tue", "Wed", "Thu", "Fri")
+weekend <- c("Sat", "Sun")
+
+collapsed_days <- surveys |>
+  mutate(day = fct_collapse(day_of_week,
+                            "Weekday" = weekday,
+                            "Weekend" = weekend)) |>
+  drop_na()
+
+ggplot(data = collapsed_days, mapping = aes(x = day)) +
+  geom_bar(stat = "count", fill = "lightseagreen") +
+  labs(title = "Number of Rodents Captured Each Day of the Week",
+       x = "Days of Week",
+       y = "Count")
+
+```
+
+#### 

@@ -477,7 +477,7 @@ ggplot(data = year_summary,
 -   using a single function call
 
 ```{r pe-1-one-call}
-# Practice Activity 5.1, Clue 6
+# Practice Activity 5, Clue 6
 date_hint <- ymd_hms("1970-01-01 00:00:00")
 suspects_clean <- suspects_clean %>%
   filter(as.integer(difftime(Time.Spotted, date_hint, units = "mins")) %% 10 == 0)
@@ -486,7 +486,7 @@ suspects_clean <- suspects_clean %>%
 -   `across()`
 
 ```{r pe-1-across}
-# Practice Activity 3, Question 2
+# Practice Activity 4, Question 2
 military_clean <- military |>
   mutate(across(.cols = Country:`2019`, .fns = ~na_if(., "xxx")),
          across(.cols = Country:`2019`, .fns = ~na_if(., ". .")))
@@ -503,7 +503,7 @@ military_clean <- military |>
 -   Example 1
 
 ```{r pe2-1}
-# Practice Activity 5.1, Clue 3
+# Practice Activity 5, Clue 3
 thanksgiving_2018 <- ymd("2018-11-22")
 thx_int <- interval((start = thanksgiving_2018 - days(35)),
                                   (end = thanksgiving_2018 + days(35)))
@@ -583,10 +583,28 @@ suspects_clean <- suspects_clean %>%
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
+Looking back at these last few weeks, I would say that I can definitely improve in the "revising my thinking" category of my skills development in this class. I always take the time to read the feedback that I receive on my labs or challenges, but I need to improve on immediately correcting my mistakes. This would be beneficial for me because then I won't have my revisions pile up and I can get constructive feedback in a timely manner.
+
+For example, I have received a couple of incompletes due to the same repeated mistake, which was related to the YAML. This mistake would mean that warnings and other messages would often pop up whenever I would render the Quarto file to be an HTML. I tried various ways of correcting the mistake, but it wasn't until Lab 3 that I realized what my mistake was -- I should have written "messages:" and not "message:" to hide them, while also include "warning: false." Prior to submitting the midterm portfolio, I made sure to revise this mistake.
+
+For the midterm portfolio, I didn't submit any revisions because I'm still working on incorporating the feedback I received into the labs.
+
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+I did a great job in this category of learning because I often leave comments for myself in the code with either citations of sources or explanations of what I'm doing to handle the data. I often do this because I like to go back to previous assignments as references.
+
+A memorable example of how I have extended my thinking would be best represented by Question 14 on Lab 2, when we had to flip the orientation of our box plots so that they can be stacked vertically. I did not really like how the x axis labels ended up looking like, so I decided to research how I could prevent the labels from overlapping and be readable. I was able to find a way to also change their orientation and provided a source for where I learned this information from.
+
 ## Peer Support & Collaboration
 
 <!-- Include an image of feedback you gave that you are proud of (either in a peer review or in Discord) -->
+
+I did pretty well with the peer support and collaboration category of my learning process in this class. I make sure that I don't step into other roles because I don't want other people to feel as though they're not capable of doing their job. However, I'm attentive enough to my peers that I'm willing to step in to help support them in any way possible, while they continue to be the ones in charge of their role. I'm also always respectful and patient because I believe we should have a non-toxic class environment for everyone to learn in.
+
+Outside of the classroom, I have engaged in the class Discord where I would try to answer my peers' questions or ask questions myself. I like that we have these channels of communication because I sometimes realize that I have the same questions as other people. It's a great way for us to share resources with one another.
+
+I included a screenshot of some feedback that I gave to another student for one of our first assignments. I like this comment because not only did I give them constructive feedback, but I also shared my thoughts on how they structured their code. I thought it was interesting that we approached things differently and because of that, we visualized our data differently (which isn't wrong!).
+
+![Screenshot of comment on Canvas](supporting_artifacts/images/Peer_Review_Screenshot.png){width="516"}
