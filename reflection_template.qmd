@@ -14,7 +14,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a \_\_ so far.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a C+ so far.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from a Lab or Challenge assignment where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -33,7 +33,11 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 
 ```{r wd-1-xlsx}
 # Practice Activity 3
-per_capita <- read_xlsx("gov_spending_per_capita.xlsx")
+military <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = 9, 
+                      skip = 7, 
+                      n_max = 190)
 ```
 
 -   `txt`
@@ -93,8 +97,9 @@ suspects_clean <- suspects_clean %>%
 -   numeric
 
 ```{r wd-4-numeric}
-# Practice Activity 1, Question 6
-top_secret <- top_secret + 14
+# Practice Activity 3, Question 3
+military_clean <- military_clean |>
+  mutate(across(`1988`:`2019`, as.numeric))
 ```
 
 -   character -- specifically a string
@@ -481,7 +486,10 @@ suspects_clean <- suspects_clean %>%
 -   `across()`
 
 ```{r pe-1-across}
-
+# Practice Activity 3, Question 2
+military_clean <- military |>
+  mutate(across(.cols = Country:`2019`, .fns = ~na_if(., "xxx")),
+         across(.cols = Country:`2019`, .fns = ~na_if(., ". .")))
 ```
 
 -   `map()` functions
