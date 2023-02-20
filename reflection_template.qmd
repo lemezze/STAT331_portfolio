@@ -14,7 +14,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a \_\_ so far.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from a Lab or Challenge assignment where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -25,14 +25,15 @@ execute:
 -   `csv`
 
 ```{r wd-1-csv}
-# Taken from Lab 2, Question 1
+# Lab 2, Question 1
 surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 ```
 
 -   `xlsx`
 
 ```{r wd-1-xlsx}
-
+# Practice Activity 3
+per_capita <- read_xlsx("gov_spending_per_capita.xlsx")
 ```
 
 -   `txt`
@@ -44,7 +45,8 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 **WD-2: I can select necessary columns from a dataset.**
 
 ```{r wd-2}
-
+# Practice Activity 1, Question 13
+top_secret[18:24, 3] <- top_secret[18:24, 3] - 100
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -52,25 +54,38 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 -   numeric
 
 ```{r wd-3-numeric}
-
+# Practice Activity 1, Question 14
+top_secret[,4:5] <- top_secret[,4:5] * 2
 ```
 
 -   character -- specifically a string
 
 ```{r wd-3-string}
-
+# Lab 3, Question 6
+nrow(distinct(hiphop, word))
 ```
 
 -   factor
 
 ```{r wd-3-factor}
-
+# Lab 5, Question 2
+  ggplot(data = surveys,
+        mapping = aes(x = weight,
+                      y = fct_reorder(species, weight))) +
+          geom_jitter(alpha = 0.1,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Weight (g)",
+       y = "",
+       title = "Relationship between Weight (g) and Species of Rodents")
 ```
 
 -   date
 
 ```{r wd-3-date}
-
+# Practice Activity 5, Clue 4
+suspects_clean <- suspects_clean %>%
+  filter(pm(with_tz(Time.Spotted, tzone = "Iceland")))
 ```
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -78,25 +93,43 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 -   numeric
 
 ```{r wd-4-numeric}
-
+# Practice Activity 1, Question 6
+top_secret <- top_secret + 14
 ```
 
 -   character -- specifically a string
 
 ```{r wd-4-string}
-
+# Lab 3, Question 7
+hiphop_clean <- mutate(hiphop_clean, 
+                       binEthnic <- case_when(ethnic == "white" ~ "white",
+                                              TRUE ~ "non-white"))
 ```
 
 -   factor
 
 ```{r wd-4-factor}
-
+# Lab 5, Question 1
+  ggplot(data = surveys,
+        mapping = aes(x = weight,
+                      y = fct_reorder(species, weight))) +
+          geom_jitter(alpha = 0.1,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Weight (g)",
+       y = "Species of Rodents",
+       title = "Relationship between Weight (g) and Species of Rodents")
 ```
 
 -   date
 
 ```{r wd-4-date}
-
+# Practice Activity 5, Clue 3
+thanksgiving_2018 <- ymd("2018-11-22")
+thx_int <- interval((start = thanksgiving_2018 - days(35)),
+                                  (end = thanksgiving_2018 + days(35)))
+suspects_clean <- suspects_clean %>%
+  filter(Time.Spotted %within% thx_int)
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -136,7 +169,15 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 -   `anti_join()`
 
 ```{r wd-6-anti}
+# Practice Activity 4, Question 4
+military_clean <- military_clean |>
+  anti_join(cont_region, by = c("Country" = "Region"))
 
+new_regions <- military_clean |>
+  filter(if_all(.cols = `1988`:`2019`, is.na))
+
+regions_not_removed <- new_regions |>
+  anti_join(cont_region, by = c("Country" = "Region"))
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -144,7 +185,13 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 -   `pivot_longer()`
 
 ```{r wd-7-long}
-
+# Practice Activity 4, Question 5
+military_clean_long <- military_clean |>
+  pivot_longer(cols = `1988`:`2019`,
+               names_to = "Year",
+               values_to = "Spending"
+               ) |>
+  select(!c("Reporting year", "Notes"))
 ```
 
 -   `pivot_wider()`
@@ -164,13 +211,23 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r r-2-1}
-
+# Lab 2, Question 4
+ ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point() +
+  labs(x = "Weight (g)", 
+       y = "Hindfoot Length (mm)",
+       title = "Relationship between Rodents' Weight (g) and Hindfoot Length (mm)")
 ```
 
 -   Example 2
 
 ```{r r-2-2}
-
+# Lab 3, Question 7
+hiphop_clean <- mutate(hiphop_clean, 
+                       binEthnic <- case_when(ethnic == "white" ~ "white",
+                                              TRUE ~ "non-white"))
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -194,7 +251,14 @@ I've done this in the following provided assignments:
 -   numeric variables
 
 ```{r dvs-1-num}
-
+# Lab 2, Question 4
+ ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point() +
+  labs(x = "Weight (g)", 
+       y = "Hindfoot Length (mm)",
+       title = "Relationship between Rodents' Weight (g) and Hindfoot Length (mm)")
 ```
 
 -   numeric variables and categorical variables
@@ -206,13 +270,30 @@ I've done this in the following provided assignments:
 -   categorical variables
 
 ```{r dvs-2-cat}
-
+# Lab 5, Question 5
+surveys |>
+  group_by(day_of_week) |>
+  drop_na() |>
+  ggplot(mapping <- aes(x = day_of_week)) +
+  geom_bar(fill = "lightseagreen") +
+  labs(title = "Number of Rodents Captured Each Day of the Week",
+       x = "Day of Week",
+       y = "Count")
 ```
 
 -   dates
 
 ```{r dvs-2-date}
+# Lab 5, Question 1
+year_summary <- surveys |>
+  summarize(year, weight, genus)
 
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = weight)) +
+  geom_line() +
+  facet_wrap(~ genus) +
+  labs(title = "Weight Variation in Rodent Genus per Year")
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -220,13 +301,38 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-2-1}
+# Lab 2, Question 14
+ggplot(data = surveys,
+        mapping = aes(x = species,
+                      y = weight)) +
+          geom_jitter(alpha = 0.5,
+                      color = "cadetblue") +
+            geom_boxplot(outlier.shape = NA) +
+  labs(x = "Species of Rodents",
+       y = "Weight (g)",
+       title = "Relationship between Species of Rodents and Weight (g)") +
+  guides(x = guide_axis(angle = 90))
 
+# Axis Label Orientation: https://ggplot2.tidyverse.org/reference/guide_axis.html
 ```
 
 -   Example 2
 
 ```{r dvs-2-2}
+# Lab 5, Question 4
+year_summary <- surveys |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
 
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = mean_weight,
+                      color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
+  geom_line() +
+  labs(title = "Weight Variation in Rodent Genus per Year",
+       color = "Genus Type",
+       x = "Year",
+       y = "")
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -234,7 +340,7 @@ I've done this in the following provided assignments:
 -   Example 1
 
 ```{r dvs-3-1}
-# Taken from Lab 2, Question 14
+# Lab 2, Question 14
 ggplot(data = surveys,
         mapping = aes(x = species,
                       y = weight)) +
@@ -252,7 +358,7 @@ ggplot(data = surveys,
 -   Example 2
 
 ```{r dvs-3-2}
-# Taken from Challenge 2, Question 2
+# Challenge 2, Question 2
 cdPalette_grey <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                     "#0072B2", "#D55E00", "#CC79A7")
 
@@ -302,13 +408,33 @@ ggplot(data = surveys,
 -   Example 1
 
 ```{r dvs-5-1}
+# Lab 5, Question 2
+year_summary <- surveys |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight, na.rm = TRUE))
 
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = mean_weight,
+                      color = genus)) +
+  geom_line() +
+  labs(title = "Weight Variation in Rodent Genus per Year")
 ```
 
 -   Example 2
 
 ```{r dvs-5-2}
+# Lab 5, Question 3
+year_summary <- surveys |>
+  group_by(year, genus) |>
+  summarize(mean_weight = mean(weight))
 
+ggplot(data = year_summary,
+        mapping = aes(x = year,
+                      y = mean_weight,
+                      color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
+  geom_line() +
+  labs(title = "Weight Variation in Rodent Genus per Year")
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -346,7 +472,10 @@ ggplot(data = surveys,
 -   using a single function call
 
 ```{r pe-1-one-call}
-
+# Practice Activity 5.1, Clue 6
+date_hint <- ymd_hms("1970-01-01 00:00:00")
+suspects_clean <- suspects_clean %>%
+  filter(as.integer(difftime(Time.Spotted, date_hint, units = "mins")) %% 10 == 0)
 ```
 
 -   `across()`
@@ -366,7 +495,12 @@ ggplot(data = surveys,
 -   Example 1
 
 ```{r pe2-1}
-
+# Practice Activity 5.1, Clue 3
+thanksgiving_2018 <- ymd("2018-11-22")
+thx_int <- interval((start = thanksgiving_2018 - days(35)),
+                                  (end = thanksgiving_2018 + days(35)))
+suspects_clean <- suspects_clean %>%
+  filter(Time.Spotted %within% thx_int)
 ```
 
 -   Example 2
