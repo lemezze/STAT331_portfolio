@@ -1,5 +1,25 @@
 ---
-title: "Lightening Round Essays"
-format: html
+title: "Lightning Round Essays"
+author: "Leticia Mezzetti"
+format: 
+  html: 
+    self-contained: true
+    theme: 
+      light: minty
+      dark: minty
+layout: margin-left
 editor: visual
+execute: 
+  eval: false
+  echo: true
 ---
+
+1.  If Giovanni doesn\'t earn an A, then nobody should, because he was somebody that grew a lot as a data scientist throughout the quarter and was always willing to help others in our team during group activities.
+
+2.  The most difficult part of this class for me was trying to understand the types of joins that exist in R because I never knew about them before this class and it was difficult for me to visualize how each one was different.
+
+3.  The easiest part of this class was creating visualizations for the different data sets that we had to work with in this class because I was very interested in making our findings more "user-friendly."
+
+4.  I was surprised that R has a whole community that engages with each other on different platforms like Twitter because I didn't really notice that level of comradery in other programming languages.
+
+5.  Some advice I would give to a student just starting their quarter in STAT 331 is that you should try to stay on top of reviewing the feedback you received and seeing where you can make improvements for your revision. This course is pretty fast-paced, so it can be easy to fall behind on making these assignments presentable for your portfolio!

@@ -1,7 +1,7 @@
 ---
 title: "STAT 331 Portfolio"
 author: "Leticia Mezzetti"
-format: 
+format:
   html: 
     self-contained: true
     theme: 
@@ -14,7 +14,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a C+ so far.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a B.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from a Lab or Challenge assignment where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -32,7 +32,7 @@ surveys <- read_csv(here("Labs", "Lab 2", "surveys.csv"))
 -   `xlsx`
 
 ```{r wd-1-xlsx}
-# Practice Activity 3
+# Practice Activity 4, Question 1
 military <- read_xlsx(here::here("data", 
                                  "gov_spending_per_capita.xlsx"), 
                       sheet = 9, 
@@ -43,14 +43,17 @@ military <- read_xlsx(here::here("data",
 -   `txt`
 
 ```{r wd-1-txt}
-
+# Preview Activity 2.2
+read_delim("ages_mystery.txt", delim = "|")
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
 
 ```{r wd-2}
-# Practice Activity 1, Question 13
-top_secret[18:24, 3] <- top_secret[18:24, 3] - 100
+# REVISED: Lab 3, Question 9
+subjects <- hiphop |>
+  distinct(subj, .keep_all = TRUE) |>
+  select(age, sex, ethnic)
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -58,30 +61,34 @@ top_secret[18:24, 3] <- top_secret[18:24, 3] - 100
 -   numeric
 
 ```{r wd-3-numeric}
-# Practice Activity 1, Question 14
-top_secret[,4:5] <- top_secret[,4:5] * 2
+
 ```
 
 -   character -- specifically a string
 
 ```{r wd-3-string}
-# Lab 3, Question 6
-nrow(distinct(hiphop, word))
+# Lab 8, Step 1
+
+pluralize_gift <- function(gift){
+
+gift <-
+  if (str_detect(string = gift, pattern = "y$")){
+    gift <- str_replace(string = gift, pattern = "y$","ies")
+    } else if (str_detect(string = gift, pattern = "oose$")) {
+      gift <- str_replace(string = gift, pattern = "oose$", "eese")
+      } else {
+        gift <- str_replace(string = gift, pattern = "$", "s")
+      }
+
+return(gift)
+
+}
 ```
 
 -   factor
 
 ```{r wd-3-factor}
-# Lab 5, Question 2
-  ggplot(data = surveys,
-        mapping = aes(x = weight,
-                      y = fct_reorder(species, weight))) +
-          geom_jitter(alpha = 0.1,
-                      color = "cadetblue") +
-            geom_boxplot(outlier.shape = NA) +
-  labs(x = "Weight (g)",
-       y = "",
-       title = "Relationship between Weight (g) and Species of Rodents")
+
 ```
 
 -   date
@@ -97,7 +104,7 @@ suspects_clean <- suspects_clean %>%
 -   numeric
 
 ```{r wd-4-numeric}
-# Practice Activity 3, Question 3
+# Practice Activity 4, Question 3
 military_clean <- military_clean |>
   mutate(across(`1988`:`2019`, as.numeric))
 ```
@@ -129,12 +136,14 @@ hiphop_clean <- mutate(hiphop_clean,
 -   date
 
 ```{r wd-4-date}
-# Practice Activity 5, Clue 3
-thanksgiving_2018 <- ymd("2018-11-22")
-thx_int <- interval((start = thanksgiving_2018 - days(35)),
-                                  (end = thanksgiving_2018 + days(35)))
-suspects_clean <- suspects_clean %>%
-  filter(Time.Spotted %within% thx_int)
+# Practice Activity 5, Question 1
+suspects <- suspects %>%
+  mutate(Time.Spotted = ymd_hms(Time.Spotted),
+         Time.Spotted = force_tz(Time.Spotted,
+                                 tzone = "America/Los_Angeles")
+         )
+suspects <- suspects %>%
+  filter(pm(Time.Spotted) == TRUE)
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -154,12 +163,22 @@ suspects_clean <- suspects_clean %>%
 -   `inner_join()`
 
 ```{r wd-5-inner}
-
+# REVISED Preview Activity 4.3, Question 3
+inner_join(prof_info, prof_course)
 ```
 
 -   `full_join()`
 
 ```{r wd-5-full}
+# Preview Activity 4.3, Question 3
+prof_course |>
+  pivot_longer(cols = c(Stat_331,
+                        Stat_330,
+                        Stat_431
+                        ),
+               names_to="course",
+               values_to = "can_teach")|>
+  full_join(course_info)
 
 ```
 
@@ -202,7 +221,16 @@ military_clean_long <- military_clean |>
 -   `pivot_wider()`
 
 ```{r wd-7-wide}
-
+# Lab 9, Question 1
+allison_table <- a_names |>
+  rename(Sex = Gender) |>
+  filter(Name == "Allison")|>
+  group_by(State, Sex, Year) |>
+  summarize(Count = sum(Count),
+            .groups = "keep") |>
+  pivot_wider(names_from = Sex,
+              values_from = Count,
+              values_fill = 0)
 ```
 
 ## Reproducibility
@@ -210,6 +238,8 @@ military_clean_long <- military_clean |>
 **R-1: I can create professional looking, reproducible analyses using RStudio projects, Quarto documents, and the here package.**
 
 I've done this in the following provided assignments:
+
+-   Lab 2, Lab 3, Lab 5, Lab 8
 
 **R-2: I can write well documented and tidy code.**
 
@@ -229,9 +259,9 @@ I've done this in the following provided assignments:
 -   Example 2
 
 ```{r r-2-2}
-# Lab 3, Question 7
+# REVISED Lab 3, Question 7
 hiphop_clean <- mutate(hiphop_clean, 
-                       binEthnic <- case_when(ethnic == "white" ~ "white",
+                       binEthnic = case_when(ethnic == "white" ~ "white",
                                               TRUE ~ "non-white"))
 ```
 
@@ -240,13 +270,31 @@ hiphop_clean <- mutate(hiphop_clean,
 -   Example 1
 
 ```{r r-3-1}
+# Practice Activity 7, Step 1
+divide_and_round <- function(nums){
+  
+  my_min <- min(nums, na.rm = TRUE)
+  divided <- nums/my_min
+  rounded <- round(divided)
+  return(rounded)
+}
 
 ```
 
 -   Example 2
 
 ```{r r-3-2}
-
+# Preview Activity 9-2, Part 3
+music_man <- function(n_tromb, n_cor, n_reed){
+  
+  trombones <- rnorm(n_tromb, mean = 4.6, sd = 0.8)
+  cornets <- runif(n_cor, min = 1.5, max = 3.5)
+  reeds <- rchisq(n_reed, df = 4)
+  
+  total = sum(trombones) + sum(cornets) + sum(reeds)
+  
+  return(total)
+}
 ```
 
 ## Data Visualization & Summarization
@@ -269,7 +317,15 @@ hiphop_clean <- mutate(hiphop_clean,
 -   numeric variables and categorical variables
 
 ```{r dvs-2-num-cat}
-
+# Challenge 2, Question 1
+ggplot(data = surveys,
+        mapping = aes(x = weight,
+                      y = species)) +
+          geom_jitter(alpha = 0.5,
+                      color = "cadetblue") +
+            geom_density_ridges() +
+  labs(x = "Weight (g)",
+       y = "Species")
 ```
 
 -   categorical variables
@@ -306,38 +362,38 @@ ggplot(data = year_summary,
 -   Example 1
 
 ```{r dvs-2-1}
-# Lab 2, Question 14
-ggplot(data = surveys,
-        mapping = aes(x = species,
-                      y = weight)) +
-          geom_jitter(alpha = 0.5,
-                      color = "cadetblue") +
-            geom_boxplot(outlier.shape = NA) +
-  labs(x = "Species of Rodents",
-       y = "Weight (g)",
-       title = "Relationship between Species of Rodents and Weight (g)") +
-  guides(x = guide_axis(angle = 90))
-
-# Axis Label Orientation: https://ggplot2.tidyverse.org/reference/guide_axis.html
-```
-
--   Example 2
-
-```{r dvs-2-2}
-# Lab 5, Question 4
+# Lab 5, Part 2 Question 4
 year_summary <- surveys |>
   group_by(year, genus) |>
-  summarize(mean_weight = mean(weight))
+  summarize(mean_weight = mean(weight, na.rm = TRUE))
 
 ggplot(data = year_summary,
         mapping = aes(x = year,
                       y = mean_weight,
                       color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
   geom_line() +
-  labs(title = "Weight Variation in Rodent Genus per Year",
-       color = "Genus Type",
+  labs(title = "The Average Weights (g) of Different Rodent Genus over the Years",
+       color = "Rodent Genus Type",
        x = "Year",
-       y = "")
+       y = NULL)
+
+# Resource used to changing legend title: https://stackoverflow.com/questions/52985946/change-legend-title-ggplot2
+```
+
+-   Example 2
+
+```{r dvs-2-2}
+# Lab 5, Part 3 Question 2
+day_order <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+surveys |>
+  filter(!is.na(day_of_week)) |>
+  ggplot(mapping <- aes(x = fct_relevel(day_of_week,
+                                     day_order))) +
+  geom_bar(stat = "count", fill = "lightseagreen") +
+  labs(title = "Number of Rodents Captured Each Day of the Week",
+       x = "Day of Week",
+       y = NULL)
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -345,28 +401,24 @@ ggplot(data = year_summary,
 -   Example 1
 
 ```{r dvs-3-1}
-# Lab 2, Question 14
+# Lab 2, Question 13
 ggplot(data = surveys,
-        mapping = aes(x = species,
-                      y = weight)) +
+        mapping = aes(x = weight,
+                      y = species)) +
           geom_jitter(alpha = 0.5,
                       color = "cadetblue") +
             geom_boxplot(outlier.shape = NA) +
-  labs(x = "Species of Rodents",
-       y = "Weight (g)",
-       title = "Relationship between Species of Rodents and Weight (g)") +
-  guides(x = guide_axis(angle = 90))
-
-# Axis Label Orientation: https://ggplot2.tidyverse.org/reference/guide_axis.html
+  labs(x = "Weight (g)",
+       y = "Species of Rodents",
+       title = "Relationship between Weight (g) and Species of Rodents ")
 ```
 
 -   Example 2
 
 ```{r dvs-3-2}
-# Challenge 2, Question 2
+# REVISED Challenge 2, Question 2
 cdPalette_grey <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                     "#0072B2", "#D55E00", "#CC79A7")
-
 
 ggplot(data = surveys,
         aes(x = weight, y = species, color = genus)) +
@@ -375,21 +427,6 @@ ggplot(data = surveys,
   labs(x = "Weight (g)",
        y = "Species",
        color = "Genus of Organism") +
-  annotate("text", y = 1, x = 400, label = "Neotoma") +
-  annotate("text", y = 2, x = 200, label = "Chaetodipus") +
-  annotate("text", y = 3, x = 300, label = "Peromyscus") +
-  annotate("text", y = 4, x = 200, label = "Perognathus") +
-  annotate("text", y = 5, x = 350, label = "Reithrodontomys") + 
-  annotate("text", y = 6, x = 300, label = "Sigmodon") +
-  annotate("text", y = 7, x = 300, label = "Onychomys") +
-  annotate("text", y = 8, x = 300, label = "Peromyscus") +
-  annotate("text", y = 9, x = 350, label = "Reithrodontomys") +
-  annotate("text", y = 10, x = 350, label = "Dipodomys") +
-  annotate("text", y = 11, x = 350, label = "Dipodomys") +
-  annotate("text", y = 12, x = 350, label = "Chaetodipus") +
-  annotate("text", y = 13, x = 350, label = "Dipodomys") +
-  annotate("text", y = 14, x = 300, label = "Onychomys") +
-  xlim(0, 600) + 
   theme_dark() +
   theme(legend.position = "none")
 ```
@@ -399,21 +436,7 @@ ggplot(data = surveys,
 -   Example 1
 
 ```{r dvs-4-1}
-
-```
-
--   Example 2
-
-```{r dvs-4-2}
-
-```
-
-**DVS-5: I can find summaries of variables across multiple groups.**
-
--   Example 1
-
-```{r dvs-5-1}
-# Lab 5, Question 2
+# Lab 5, Part 2 Question 4
 year_summary <- surveys |>
   group_by(year, genus) |>
   summarize(mean_weight = mean(weight, na.rm = TRUE))
@@ -421,14 +444,34 @@ year_summary <- surveys |>
 ggplot(data = year_summary,
         mapping = aes(x = year,
                       y = mean_weight,
-                      color = genus)) +
+                      color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
   geom_line() +
-  labs(title = "Weight Variation in Rodent Genus per Year")
+  labs(title = "The Average Weights (g) of Different Rodent Genus over the Years",
+       color = "Rodent Genus Type",
+       x = "Year",
+       y = NULL)
 ```
 
 -   Example 2
 
-```{r dvs-5-2}
+```{r dvs-4-2}
+# Lab 9, Question 1
+allison_table <- a_names |>
+  rename(Sex = Gender) |>
+  filter(Name == "Allison")|>
+  group_by(State, Sex, Year) |>
+  summarize(Count = sum(Count),
+            .groups = "keep") |>
+  pivot_wider(names_from = Sex,
+              values_from = Count,
+              values_fill = 0)
+```
+
+**DVS-5: I can find summaries of variables across multiple groups.**
+
+-   Example 1
+
+```{r dvs-5-1}
 # Lab 5, Question 3
 year_summary <- surveys |>
   group_by(year, genus) |>
@@ -440,6 +483,13 @@ ggplot(data = year_summary,
                       color = fct_reorder(genus, mean_weight, .desc = TRUE))) +
   geom_line() +
   labs(title = "Weight Variation in Rodent Genus per Year")
+
+```
+
+-   Example 2
+
+```{r dvs-5-2}
+
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -447,7 +497,17 @@ ggplot(data = year_summary,
 -   Example 1
 
 ```{r dvs-6-1}
-
+# Lab 9, Question 2
+allison_f <- a_names |>
+  rename(Sex = Gender) |>
+  filter(Name == "Allison",
+         Sex == "F")|>
+  group_by(State, Sex, Year) |>
+  summarize(Count = sum(Count),
+            .groups = "keep") |>
+  pivot_wider(names_from = Sex,
+              values_from = Count,
+              values_fill = 0)
 ```
 
 -   Example 2
@@ -477,10 +537,21 @@ ggplot(data = year_summary,
 -   using a single function call
 
 ```{r pe-1-one-call}
-# Practice Activity 5, Clue 6
-date_hint <- ymd_hms("1970-01-01 00:00:00")
-suspects_clean <- suspects_clean %>%
-  filter(as.integer(difftime(Time.Spotted, date_hint, units = "mins")) %% 10 == 0)
+# Lab 8, Step 3
+sing_day <- function(dataset, num, phrase_col){
+
+  num_word <- english::ordinal(num)
+
+  intro <- glue::glue("On the {num_word} day of Christmas, my true love gave to me")
+    phrases <- dataset |>
+      pull( {{phrase_col}} )
+
+    gifts <- phrases[num:1]
+    combined <- glue::glue_collapse(gifts,
+                                    sep = ",\n",
+                                    last = ", and \n")
+   return (glue::glue("{intro} \n {combined} \n\n"))
+}
 ```
 
 -   `across()`
@@ -495,7 +566,12 @@ military_clean <- military |>
 -   `map()` functions
 
 ```{r pe-1-map-1}
+# Lab 8, Step 3
 
+sing_day(xmas2, num = 2, phrase_col = Full.Phrase)
+map_chr(1:12, ~sing_day(xmas2, .x, Full.Phrase)) |>
+  str_c(collapse = "\n") |>
+  cat()
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -503,18 +579,39 @@ military_clean <- military |>
 -   Example 1
 
 ```{r pe2-1}
-# Practice Activity 5, Clue 3
-thanksgiving_2018 <- ymd("2018-11-22")
-thx_int <- interval((start = thanksgiving_2018 - days(35)),
-                                  (end = thanksgiving_2018 + days(35)))
-suspects_clean <- suspects_clean %>%
-  filter(Time.Spotted %within% thx_int)
+# Lab 8, Part 2 Testing
+sing_day <- function(dataset, num, phrase_col){
+  
+  # Step 1: Setup the intro line
+  # Hint: You need to convert a number (e.g., 1) to a word (e.g., first)
+  num_word <- english::ordinal(num)
+  
+  intro <- glue::glue("On the {num_word} day of Christmas, my true love gave to me")
+  
+  # Step 2: Sing the gift phrases
+
+    phrases <- dataset |>
+      pull( {{phrase_col}} )
+
+    gifts <- phrases[num:1]
+    combined <- glue::glue_collapse(gifts,
+                                    sep = ",\n",
+                                    last = ", and \n")
+    
+  ## put it together
+    
+   return (glue::glue("{intro} \n {combined} \n\n"))
+}
 ```
 
 -   Example 2
 
 ```{r pe2-2}
-
+#Practice Activity 7, Part 2
+no_nines_or_twelves <- function(nums){
+  check <- !(nums %% 9 == 0 | nums %% 12 == 0)
+  return(check)
+}
 ```
 
 **PE-3:I can use iteration to reduce repetition in my code.**
@@ -522,17 +619,25 @@ suspects_clean <- suspects_clean %>%
 -   `across()`
 
 ```{r pe-3-across}
-
+# Practice Activity 4, Question 3
+military_clean <- military_clean |>
+  mutate(across(`1988`:`2019`, as.numeric))
 ```
 
 -   `map()` functions (Provide 2 Examples)
 
 ```{r pe-3-map-1}
-
+# Preview Activity 8, Question 3
+penguins |>
+  select(bill_length_mm:body_mass_g) |>
+  map_df(standardize)
 ```
 
 ```{r pe-3-map-2}
-
+# Preview Activity 8, Question 2
+penguins %>%
+  mutate(
+    body_mass_g = map_dbl(body_mass_g, standardize))
 ```
 
 **PE-4: I can use modern tools when carrying out my analysis.**
@@ -540,13 +645,44 @@ suspects_clean <- suspects_clean %>%
 -   Example 1
 
 ```{r pe-4-1}
-
+# Lab 9, Question 1
+allison_table <- a_names |>
+  rename(Sex = Gender) |>
+  filter(Name == "Allison")|>
+  group_by(State, Sex, Year) |>
+  summarize(Count = sum(Count),
+            .groups = "keep") |>
+  pivot_wider(names_from = Sex,
+              values_from = Count,
+              values_fill = 0)
 ```
 
 -   Example 2
 
 ```{r pe-4-2}
+# Lab 8, Part 2 Testing
+sing_day <- function(dataset, num, phrase_col){
+  
+  # Step 1: Setup the intro line
+  # Hint: You need to convert a number (e.g., 1) to a word (e.g., first)
+  num_word <- english::ordinal(num)
+  
+  intro <- glue::glue("On the {num_word} day of Christmas, my true love gave to me")
+  
+  # Step 2: Sing the gift phrases
 
+    phrases <- dataset |>
+      pull( {{phrase_col}} )
+
+    gifts <- phrases[num:1]
+    combined <- glue::glue_collapse(gifts,
+                                    sep = ",\n",
+                                    last = ", and \n")
+    
+  ## put it together
+    
+   return (glue::glue("{intro} \n {combined} \n\n"))
+}
 ```
 
 ## Data Simulation & Modeling
@@ -556,13 +692,38 @@ suspects_clean <- suspects_clean %>%
 -   Example 1
 
 ```{r dsm-1-1}
+# Preview Activity 9-2, Part 3
+set.seed(1957)
 
+music_man <- function(n_tromb, n_cor, n_reed){
+  
+  trombones <- rnorm(n_tromb, mean = 4.6, sd = 0.8)
+  cornets <- runif(n_cor, min = 1.5, max = 3.5)
+  reeds <- rchisq(n_reed, df = 4)
+  
+  return(sum(trombones) + sum(cornets) + sum(reeds))
+  
+}
+
+my_weights <- map_dbl(.x = 1:1000, 
+                      .f = ~ music_man(n_tromb = 76,
+                                       n_cor = 110,
+                                       n_reed = 1035))
+
+sum(my_weights < 4532)
 ```
 
 -   Example 2
 
 ```{r dsm-1-2}
+# Preview Activity 9-2, Part 2
+qunif(p = 0.95, min = 1.5, max = 3.5)
+qnorm(p = .10, mean = 4.6, sd = 0.8)
+pnorm(q = 5, mean = 4.6, sd = 0.8, lower.tail = FALSE)
+pchisq(q = 5, df = 4, lower.tail = FALSE)
 
+random_weights <- rnorm(n = 100, mean = 4.6, sd = 0.8)
+sum(random_weights < 4)
 ```
 
 **DSM-2: I can fit a linear regression and extract necessary summary measures.**
@@ -570,41 +731,41 @@ suspects_clean <- suspects_clean %>%
 -   Example 1
 
 ```{r dsm-2-1}
-
+# Lab 9, Question 4
+allison_over_years |> 
+  lm(Count ~ Year, data = _)
 ```
 
 -   Example 2
 
 ```{r dsm-2-2}
-
+# Practice Activity 9, Question 2
+mystery_lm <- mystery_animal |>
+  lm(weight_after ~ weight_before, data = _)
 ```
 
 ## Revising My Thinking
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-Looking back at these last few weeks, I would say that I can definitely improve in the "revising my thinking" category of my skills development in this class. I always take the time to read the feedback that I receive on my labs or challenges, but I need to improve on immediately correcting my mistakes. This would be beneficial for me because then I won't have my revisions pile up and I can get constructive feedback in a timely manner.
-
-For example, I have received a couple of incompletes due to the same repeated mistake, which was related to the YAML. This mistake would mean that warnings and other messages would often pop up whenever I would render the Quarto file to be an HTML. I tried various ways of correcting the mistake, but it wasn't until Lab 3 that I realized what my mistake was -- I should have written "messages:" and not "message:" to hide them, while also include "warning: false." Prior to submitting the midterm portfolio, I made sure to revise this mistake.
-
-For the midterm portfolio, I didn't submit any revisions because I'm still working on incorporating the feedback I received into the labs.
+Even though there were some times that I could have continued to "revise my thinking" in some of the assignments, I was able to successfully implement a version of this throughout the quarter. I would often take the time to read the feedback that I receive on my labs or challenges and would also reflect on what I could have improved on when I gave feedback to my peers. I would also take this feedback and attempt to revise these assignments to figure out how to improve my understanding of the material. This iterative process helped me solidify my skills in problem-solving because I was able to eventually recognize patterns in the approaches we could use in some of the problems in assignments. I also continued to demonstrate revision in my thinking because I changed some of the entries in my portfolio and even revised some of my code samples.
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-I did a great job in this category of learning because I often leave comments for myself in the code with either citations of sources or explanations of what I'm doing to handle the data. I often do this because I like to go back to previous assignments as references.
+I did a great job in this category of learning because I often left comments for myself in the code with either citations of sources or explanations of what I'm doing to handle the data. I often did this because I like to go back to previous assignments as references.
 
-A memorable example of how I have extended my thinking would be best represented by Question 14 on Lab 2, when we had to flip the orientation of our box plots so that they can be stacked vertically. I did not really like how the x axis labels ended up looking like, so I decided to research how I could prevent the labels from overlapping and be readable. I was able to find a way to also change their orientation and provided a source for where I learned this information from.
+A memorable example of how I have extended my thinking would be best represented by Question 14 on Lab 2, when we had to flip the orientation of our box plots so that they can be stacked vertically. I did not really like how the x axis labels ended up looking like, so I decided to research how I could prevent the labels from overlapping and be readable. I was able to find a way to also change their orientation and provided a source for where I learned this information from. Even though I learned how to do this skill, it wasn't until later that we learned that we shouldn't make readers tilt their heads when looking at graphs because it is best practice to make our data visualizations straight-forward and readable. This meant that the best approach for that lab was to have kept our box plots horizontal.
 
 ## Peer Support & Collaboration
 
 <!-- Include an image of feedback you gave that you are proud of (either in a peer review or in Discord) -->
 
-I did pretty well with the peer support and collaboration category of my learning process in this class. I make sure that I don't step into other roles because I don't want other people to feel as though they're not capable of doing their job. However, I'm attentive enough to my peers that I'm willing to step in to help support them in any way possible, while they continue to be the ones in charge of their role. I'm also always respectful and patient because I believe we should have a non-toxic class environment for everyone to learn in.
+I did pretty well with the peer support and collaboration category of my learning process in this class. I made sure that I didn't step into other roles because I didn't want my teammates to feel as though they're not capable of doing their job. However, this means that I was still attentive enough to my peers, where I was willing to step in to help support them in any way possible while they continue to be in charge of their role. I've also been respectful and patient because I believe we should have a non-toxic class environment for everyone to learn in.
 
-Outside of the classroom, I have engaged in the class Discord where I would try to answer my peers' questions or ask questions myself. I like that we have these channels of communication because I sometimes realize that I have the same questions as other people. It's a great way for us to share resources with one another.
+Outside of the classroom, I engaged in the class Discord where I would try to answer my peers' questions or ask questions myself. I liked that we have these channels of communication because I sometimes realized that I had the same questions as other people. It was a great way for us to share resources with one another.
 
-I included a screenshot of some feedback that I gave to another student for one of our first assignments. I like this comment because not only did I give them constructive feedback, but I also shared my thoughts on how they structured their code. I thought it was interesting that we approached things differently and because of that, we visualized our data differently (which isn't wrong!).
+I included a screenshot of some feedback that I gave to another student for one of our first assignments. I liked this comment because not only did I give them constructive feedback, but I also shared my thoughts on how they structured their code. I thought it was interesting that we approached things differently and because of that, we visualized our data differently (which isn't wrong!).
 
 ![Screenshot of comment on Canvas](supporting_artifacts/images/Peer_Review_Screenshot.png){width="516"}

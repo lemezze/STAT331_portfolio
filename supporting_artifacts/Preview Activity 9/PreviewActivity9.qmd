@@ -1,0 +1,50 @@
+---
+title: "Preview Activity 9.1"
+author: "Leticia Mezzetti"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(moderndive)
+```
+
+```{r}
+penguins %>%
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_point() +
+  stat_smooth(method = "lm") + 
+  labs(x = "Bill Depth (mm)", 
+       y = "Bill Length (mm)")
+```
+
+```{r}
+
+my_model <- penguins |>
+  lm(bill_length_mm ~ bill_depth_mm, data = _)
+
+summary(my_model)
+broom::tidy(my_model)
+broom::glance(my_model)
+```
+
+```{r}
+my_model_2 <- penguins |>
+  lm(bill_length_mm ~ bill_depth_mm*species, data = _)
+summary(my_model_2)
+broom::tidy(my_model_2)
+broom::glance(my_model_2)
+
+penguins %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  stat_smooth(method = "lm") + 
+  labs(x = "Bill Length (mm)", 
+       y = "Bill Depth (mm)")
+```
+
+```{r}
+
+```

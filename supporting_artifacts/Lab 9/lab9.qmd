@@ -1,0 +1,112 @@
+---
+title: "Lab 9"
+author: "Leticia Mezzetti"
+format: 
+  html:
+    self-contained: true
+    code-tools: true
+    code-fold: true
+    theme: 
+      light: minty
+      dark: minty
+editor: visual
+execute:
+  echo: true
+  messages: false
+  warning: false
+---
+
+# **Lab 9: Baby Names**
+
+## **The Data**
+
+Our dataset(s) in this lab concerns baby names and their popularity over time. At [this link](https://www.dropbox.com/sh/czm61yzmvzl6xfb/AABEFdpy02aNRhZ_vcxrVAQSa?dl=0), you can find the names for ALL 50 states, in separate datasets organized by first letter. For each year, and for each name with at least 50 recorded babies born, we are given the counts of how many babies had that name.
+
+## Set Up
+
+```{r}
+library(tidyverse)
+library(here)
+library(dplyr)
+library(broom)
+```
+
+```{r}
+a_names <- read.csv("StateNames_A.csv")
+```
+
+## **3 Summarizing & Visualizing the Number of Allisons**
+
+1.  Make a summary table of the number of babies named "Allison" for each state and the sex of the baby. Specifically, the table should have the following qualities: each state should be its own rowand each sex should have its own columnif there were no babies born for that combination of state & sex there should be a 0 (not an `NA`)
+
+    **Difference between gender and sex:** The dataset has a column titled `Gender`, which contains two values `"F"` and `"M"`, representing "Female" and "Male". The sex someone was assigned at birth is different from their gender identity [(definitions)](https://www.plannedparenthood.org/learn/gender-identity/sex-gender-identity). Thus, this variable should be renamed to `Sex` or `Sex at Birth`.
+
+    ```{r}
+    allison_table <- a_names |>
+      rename(Sex = Gender) |>
+      filter(Name == "Allison")|>
+      group_by(State, Sex, Year) |>
+      summarize(Count = sum(Count),
+                .groups = "keep") |>
+      pivot_wider(names_from = Sex,
+                  values_from = Count,
+                  values_fill = 0)
+    ```
+
+2.  You should have seen in the table above that "Allison" is a name given overwhelmingly to babies assigned "female" at birth. So, create a new dataset named `allison_f` which contains **only** the babies assigned `F`emale at birth.
+
+    ```{r}
+    allison_f <- a_names |>
+      rename(Sex = Gender) |>
+      filter(Name == "Allison",
+             Sex == "F")|>
+      group_by(State, Sex, Year) |>
+      summarize(Count = sum(Count),
+                .groups = "keep") |>
+      pivot_wider(names_from = Sex,
+                  values_from = Count,
+                  values_fill = 0)
+    ```
+
+    **Danger:** This should be the dataset you use for the remainder of the assignment!
+
+3.  Make a visualization showing how the popularity of the name "Allison" has changed over the years. To be clear, each year should have **one** observation--the total number of Allisons born that year.
+
+```{r}
+allison_over_years <- a_names |> 
+  filter(Name == "Allison") |> 
+  group_by(Year) |>
+  mutate(Count = sum(Count)) |> 
+  summarize(Count) |> 
+  distinct(Year, .keep_all = TRUE)
+  
+allison_over_years |> 
+  ggplot(mapping = aes(x = Year,
+                       y = Count)) +
+    geom_line() +
+    labs(title = "Popularity of Naming Female Babies 'Allison' over the Years",
+         x = "Years",
+         y = NULL)
+```
+
+## **4 Modeling the Number of Allisons**
+
+4.  Fit a linear model with the year as the explanatory variable, and the number of Allisons as the response. Similar to #3, each year should have **one** observation--the total number of Allisons born that year.
+
+```{r}
+allison_over_years |> 
+  lm(Count ~ Year, data = _)
+```
+
+5.  Write out the estimated regression equation
+
+    Allison_Predictions = 209815.1 - 101.6(Year)
+
+6.  Plot the *residuals* of the model, that is, the actual values minus the predicted values. Comment on the residuals - do you see any patterns?
+
+    ```{r}
+    ```
+
+## **5 Spelling by State**
+
+In middle school I was **so** upset with my parents for not naming me "Allyson". Past my pre-teen rebellion, I'm happy with my name and am impressed when baristas spell it "Allison" instead of "Alison". But I don't have it as bad as my good friend Allan!Narrow the A name dataset (downloaded previously) down to only male-assigned babies named "Allan", "Alan", or "Allen". Make a plot comparing the popularity of these names over time.**Filtering multiple values**It looks like you want to filter for a vector of values. What tools have you learned which can help you accomplish this task?In California, Allan's spelling of his name is the least common of the three but perhaps it's not such an unusual name for his home state of Pennsylvania. Compute the total number of babies born with each spelling of "Allan" in the year 2000, in Pennsylvania and in California. Specifically, the table should have the following qualities:each spelling should be its own columneach state should have its own rowa `0` (not an `NA`) should be used to represent locations where there were no instances of these namesConvert your total counts to overall percents. That is, what was the percent breakdown between the three spellings in CA? What about in PA?

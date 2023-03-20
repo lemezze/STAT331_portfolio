@@ -1,5 +1,23 @@
 ---
 title: "My Growth as a Data Scientist"
-format: html
+author: "Leticia Mezzetti"
+format: 
+  html: 
+    self-contained: true
+    theme: 
+      light: minty
+      dark: minty
+layout: margin-left
 editor: visual
+execute: 
+  eval: false
+  echo: true
 ---
+
+Prior to this class, I never really saw myself as a data scientist. I sort of knew what data science was, but never really thought about the tools that data scientists use for analyzing and visualizing data. After seeing R listed in a job description, I became curious about R and how I could improve my skills in analyzing and visualizing data because I have only used some MATLAB to perform these tasks. This was when I decided to reach out to Dr. Theobold about how I could enroll in this class, so I could investigate this area of data science. I am very proud of myself because I was able to develop a new set of skills and understanding of statistical programming after completing this course.
+
+Of course, this wasn't an easy process. I remember that I sort of struggled during the first week of this class because I was not used to using the `<-` operator instead of the `=` operator when assigning things to variable names and I couldn't figure out how to properly format my Quarto documents. I was able to eventually figure these out and was also able to improve my understanding on how to visualize data. For instance, in Lab 3 Question 7, I learned that the `=` inside the mutate function is used to pass an argument to a name and not as an assignment operator. Little details like these helped me develop a detail-oriented approach with programming, where I needed to make sure that my code was intentional and efficient.
+
+I was also challenged throughout the quarter with the different types of data sets that we had to work with and ways that I can plot that data in meaningful ways. When I was exploring the different functions I could use in the ggplot2 library, I learned ways to represent pretty basic scatterplots, histograms, and bar plots. Eventually, I learned more about density ridges (Challenge 2) and how to fit linear models (Lab 9), which weren't really covered in my other statistics or MATLAB courses.
+
+I wouldn't say that I became a full-fledged data scientist after this course, but I definitely did develop some data science skills. Hopefully I get to continue to learn more about how I can apply these skills in the future!

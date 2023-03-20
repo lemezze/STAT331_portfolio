@@ -1,5 +1,27 @@
 ---
 title: "The Power of Efficiency"
-format: html
+author: "Leticia Mezzetti"
+format: 
+  html: 
+    self-contained: true
+    theme: 
+      light: minty
+      dark: minty
+layout: margin-left
 editor: visual
+execute: 
+  eval: false
+  echo: true
 ---
+
+Efficiency is usually defined as a measurable quantity of producing results with hardly any wasted resources. Efficiency is extremely important in data science because it enables the data scientist to make decisions on how to optimize their code for very large data sets. Efficiency is definitely up to the data scientist and the requirements that are necessary for their project. Depending on the goal, the data scientist has to account for multiple factors, such as the running time, unnecessary repetition in the code, and maintainability, that could make their code more efficient.
+
+An example of inefficiency is when the same process is repeatedly done across a data set without leveraging the existing functions in several R packages. Once you find the best function (or nest of functions) to do this process optimally, you'll find that the code could be more concise and less likely to worry about using depreciated functions that makes your results non-reproducible.
+
+There were multiple times in this course that I was able to save myself time from repetitive processes by using the `across` function, such as in Practice Activity 4 and Lab 5. It helped me reduce some lines of code since `across` handles multiple columns in a data set in a single line. Another way that I had to challenge my efficiency was with Lab 9, when I needed to figure out how to clean up the data set by filling in missing values with "0". After taking some time to research, I found that the `pivot_wider()` function had a built-in capability to fill in missing values with whatever you wanted by using the `values_fill()` option.
+
+I would argue that efficiency is a skill that is learned because you have to figure out how to research and recognize an optimal solution. An example of when I couldn't figure out how to find a better solution was during Challenge 2, when we had to label each of the bar plots with their corresponding rodent genus. I ended up hardcoding each one of the rodent genus to its respective bar plot, but this would've been impossible if we had a larger data set. Now that I've gained more familiarity with R and the resources available, I'm sure I could find a much better solution for that challenge, if needed.
+
+
+
+

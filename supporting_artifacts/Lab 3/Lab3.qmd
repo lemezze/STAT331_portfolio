@@ -82,8 +82,9 @@ nrow(distinct(hiphop, word))
 #### **7. Make a new variable that re-categorizes `ethnic` into only two groups, "white" and "non-white", to simplify your data.**
 
 ```{r}
+# Edited to not include <- inside the mutate. Should've been =
 hiphop_clean <- mutate(hiphop_clean, 
-                       binEthnic <- case_when(ethnic == "white" ~ "white",
+                       binEthnic = case_when(ethnic == "white" ~ "white",
                                               TRUE ~ "non-white"))
 # Utilized case_when and followed the example found here, https://bookdown.org/ansellbr/WEHI_tidyR_course_book/manipulating-data-with-dplyr.html, to model my code
 ```
